@@ -10,14 +10,21 @@ namespace Assets.Scripts.Follow_pet
     public class PetFollower
     {
         private Transform target;
+        private NavMeshObstacle targetObstacle;
         private float distanceLimit;
         private NavMeshAgent agent;
 
-        public PetFollower(Transform target, float distanceLimit, NavMeshAgent agent)
+        public PetFollower(Transform target, NavMeshAgent agent, float maxDistance, float minDistance)
         {
             this.target = target;
-            this.distanceLimit = distanceLimit;
+            this.distanceLimit = maxDistance;
             this.agent = agent;
+
+            //Add NavMeshObstacle component on the fly
+            targetObstacle = target.gameObject.AddComponent<NavMeshObstacle>() as NavMeshObstacle;
+            targetObstacle.carving = true;
+            targetObstacle.shape = NavMeshObstacleShape.Capsule;
+            targetObstacle.size *= minDistance;
         }
 
         public void UpdateMove()
@@ -27,11 +34,11 @@ namespace Assets.Scripts.Follow_pet
 
         private void runTo(Vector3 target)
         {
-            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * distanceLimit;
-            randomDirection.y = 0;
+            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere;
+            randomDirection *= distanceLimit;
             randomDirection += target;
             NavMeshHit hit;
-            NavMesh.SamplePosition(randomDirection, out hit, distanceLimit, 1);
+            NavMesh.SamplePosition(randomDirection, out hit, distanceLimit, NavMesh.AllAreas);
             Vector3 finalPosition = hit.position;
             agent.SetDestination(finalPosition);
         }

@@ -7,12 +7,13 @@ using UnityEngine.AI;
 public class Follower : MonoBehaviour
 {
     public Transform target;
-    public float distanceLimit;
+    public float MaxDistance;
+    public float MinDistance;
     private PetFollower pf;
 
     private void Start()
     {
-        pf = new PetFollower(target, distanceLimit, GetComponent<NavMeshAgent>());
+        pf = new PetFollower(target, GetComponent<NavMeshAgent>(), MaxDistance, MinDistance);
     }
 
     private void Update()
