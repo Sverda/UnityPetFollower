@@ -2,29 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Assets.Scripts.Follow_pet;
+using UnityEngine.AI;
 
 public class Follower : MonoBehaviour
 {
     public Transform target;
-    public float speed;
-    public Vector3 distanceLimit;
+    public float distanceLimit;
+    private PetFollower pf;
 
     private void Start()
     {
-        PetFollower.Rb = GetComponent<Rigidbody>();
-        PetFollower.MyTransform = GetComponent<Transform>();
-        PetFollower.Target = target;
-        PetFollower.MoveBehaviour.speed = speed;
-        PetFollower.MoveBehaviour.distanceLimit = distanceLimit;
+        pf = new PetFollower(target, distanceLimit, GetComponent<NavMeshAgent>());
     }
 
     private void Update()
     {
-        PetFollower.MoveBehaviour.UpdateMove();
-    }
-
-    private void LateUpdate()
-    {
-        PetFollower.MoveBehaviour.ComputeDistance();
+        pf.UpdateMove();
     }
 }
